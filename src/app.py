@@ -35,6 +35,29 @@ def handle_hello():
     members = jackson_family.get_all_members()
     response_body = {"hello": "world",
                      "family": members}
+    
+    if members is None:
+        return jsonify({"Error": "No existe la familia"}), 400
+    return jsonify(response_body), 200
+    raise Exception("") 
+
+# Recuperar solo un miembro
+@app.route('/members/<int:member_id>', methods=['GET'])
+def identify_member(member_id):
+    member = jackson_family.get_member(member_id)
+    response_body = {"member": member}
+    return jsonify(response_body), 200
+
+
+# TAREA PENDIENTE!!!!!: Añadir un miembro
+
+
+
+# Elimina un miembro
+@app.route('/members/<int:member_id>', methods=['DELETE'])
+def delete_member(member_id):
+    member = jackson_family.delete_member(member_id)
+    response_body = {"done": True}
     return jsonify(response_body), 200
 
 
