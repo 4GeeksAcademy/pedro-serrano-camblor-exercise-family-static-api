@@ -55,7 +55,7 @@ def identify_member(member_id):
 
 # Elimina un miembro
 @app.route('/members/<int:member_id>', methods=['DELETE'])
-def delete_member(member_id):
+def remove_member(member_id):
     member = jackson_family.delete_member(member_id)
     response_body = {"done": True}
     return jsonify(response_body), 200
