@@ -35,22 +35,59 @@ def handle_hello():
     members = jackson_family.get_all_members()
     response_body = {"hello": "world",
                      "family": members}
-    
+
     if members is None:
-        return jsonify({"Error": "No existe la familia"}), 400
+        return jsonify({"Error": "The family does not exist"}), 400
     return jsonify(response_body), 200
-    raise Exception("") 
+    raise Exception("")
 
 # Recuperar solo un miembro
+
+
 @app.route('/members/<int:member_id>', methods=['GET'])
 def identify_member(member_id):
     member = jackson_family.get_member(member_id)
     response_body = {"member": member}
+
+    if member is None:
+        return jsonify({"Error": "The member does not exist"}), 400
     return jsonify(response_body), 200
 
 
-# TAREA PENDIENTE!!!!!: Añadir un miembro
+# Añadir un miembro
+@app.route('/members', methods=['POST'])
+def welcome_member():
+    request_body = request.json
+    new_member = jackson_family.add_member(request_body)
+    response_body = {"member_added": new_member}
 
+    if not request_body:
+        return jsonify({"error": "Missing request body"}), 400
+    return jsonify(response_body), 200
+
+    #DUDAS PARA PROFES:
+    # Si no se añade un first name en el cuerpo
+    """ if 
+        return jsonify({"error": "You must add a first name for the request to be valid"}), 400
+    return jsonify(response_body), 200 """
+
+    # Si no se añade age en el cuerpo
+    """ if
+        return jsonify({"error": "You must add a first name for the request to be valid"}), 400
+    return jsonify(response_body), 200 """
+
+    # Si no se añaden lucky numbers en el cuerpo
+    """ if
+        return jsonify({"error": "You must add a first name for the request to be valid"}), 400
+    return jsonify(response_body), 200 """
+    
+    # Si se intenta añadir una clave duplicada, como dos first_names, o un id/apellido de manera manual
+        # Notas y dudas: 
+            # al añadir dos claves iguales, solo añade el último. Por qué? 
+            # añ introducir manualmente un id o last_name, imagino que no lo tiene en cuenta porque lo sobreescribo dentro de la funcion add_member()
+    """ if
+        return jsonify({"error": "You must add a first name for the request to be valid"}), 400
+    return jsonify(response_body), 200 """
 
 
 # Elimina un miembro
@@ -59,7 +96,6 @@ def remove_member(member_id):
     member = jackson_family.delete_member(member_id)
     response_body = {"done": True}
     return jsonify(response_body), 200
-
 
 
 # This only runs if `$ python src/app.py` is executed

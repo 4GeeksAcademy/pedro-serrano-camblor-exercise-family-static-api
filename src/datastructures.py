@@ -41,9 +41,10 @@ class FamilyStructure:
         return generated_id
 
     def add_member(self, member):
-        # You have to implement this method
-        # Append the member to the list of _members
-        pass
+        member["id"] = self._generate_id()
+        member["last_name"] = self.last_name
+        self._members.append(member)
+        return member
 
     def delete_member(self, id):
         for member in self._members:
@@ -55,7 +56,7 @@ class FamilyStructure:
         for member in self._members:
             if member["id"] == id:
                 return member
-        
+
     # This method is done, it returns a list with all the family members
     def get_all_members(self):
         return self._members
