@@ -32,40 +32,42 @@ def sitemap():
 @app.route('/members', methods=['GET'])
 def handle_hello():
     # This is how you can use the Family datastructure by calling its methods
-    members = jackson_family.get_all_members()
-    response_body = {"hello": "world",
-                     "family": members}
+    try:
+        members = jackson_family.get_all_members()
+        response_body = members
 
-    if members is None:
-        return jsonify({"Error": "The family does not exist"}), 400
-    return jsonify(response_body), 200
-    raise Exception("")
+        if members is None:
+            return jsonify({"Error": "The family does not exist"}), 400
+        return jsonify(response_body), 200
+    except Exception as e:
+        return jsonify({"Error": "Server error", "Message": str(e)}), 500
 
 # Recuperar solo un miembro
 
 
-@app.route('/members/<int:member_id>', methods=['GET'])
-def identify_member(member_id):
-    member = jackson_family.get_member(member_id)
-    response_body = {"member": member}
+@app.route('/members/<int:id>', methods=['GET'])
+def identify_member(id):
+    member = jackson_family.get_member(id)
+    response_body = {"first_name": member["first_name"], "id": member["id"],
+                     "age": member["age"], "lucky_numbers": member["lucky_numbers"]}
 
-    if member is None:
-        return jsonify({"Error": "The member does not exist"}), 400
+    """ if member is None:
+        return jsonify({"Error": "The member does not exist"}), 400 """
     return jsonify(response_body), 200
 
 
 # Añadir un miembro
 @app.route('/members', methods=['POST'])
 def welcome_member():
-    request_body = request.json
+    request_body = request.get_json()
     new_member = jackson_family.add_member(request_body)
-    response_body = {"member_added": new_member}
+    response_body = new_member
 
     if not request_body:
         return jsonify({"error": "Missing request body"}), 400
     return jsonify(response_body), 200
 
-    #DUDAS PARA PROFES:
+    # DUDAS PARA PROFES:
     # Si no se añade un first name en el cuerpo
     """ if 
         return jsonify({"error": "You must add a first name for the request to be valid"}), 400
@@ -80,20 +82,20 @@ def welcome_member():
     """ if
         return jsonify({"error": "You must add a first name for the request to be valid"}), 400
     return jsonify(response_body), 200 """
-    
+
     # Si se intenta añadir una clave duplicada, como dos first_names, o un id/apellido de manera manual
-        # Notas y dudas: 
-            # al añadir dos claves iguales, solo añade el último. Por qué? 
-            # añ introducir manualmente un id o last_name, imagino que no lo tiene en cuenta porque lo sobreescribo dentro de la funcion add_member()
+    # Notas y dudas:
+    # al añadir dos claves iguales, solo añade el último. Por qué?
+    # añ introducir manualmente un id o last_name, imagino que no lo tiene en cuenta porque lo sobreescribo dentro de la funcion add_member()
     """ if
         return jsonify({"error": "You must add a first name for the request to be valid"}), 400
     return jsonify(response_body), 200 """
 
 
 # Elimina un miembro
-@app.route('/members/<int:member_id>', methods=['DELETE'])
-def remove_member(member_id):
-    member = jackson_family.delete_member(member_id)
+@app.route('/members/<int:id>', methods=['DELETE'])
+def remove_member(id):
+    member = jackson_family.delete_member(id)
     response_body = {"done": True}
     return jsonify(response_body), 200
 
